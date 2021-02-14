@@ -3,7 +3,7 @@ for details on configuring this project to bundle and minify static web assets. 
 
 a.navbar-brand {
   white-space: normal;
-  text-align: center;
+  text-align: left;
   word-break: break-all;
 }
 
@@ -22,6 +22,32 @@ a {
   color: #fff;
   background-color: #1b6ec2;
   border-color: #1861ac;
+}
+
+h1 {
+    text-align: center;
+    font-family: 'Courier New', Courier New, Courier, monospace;
+    color: #00ACEE;
+}
+
+h2 {
+    text-align: center;
+}
+
+h3 {
+    text-align: center;
+}
+
+p {
+    text-align: center;
+}
+
+.submitView {
+    height: 100vh;
+    height: auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 /* Sticky footer styles
@@ -51,8 +77,6 @@ button.accept-policy {
   line-height: inherit;
 }
 
-/* Sticky footer styles
--------------------------------------------------- */
 html {
   position: relative;
   min-height: 100%;
@@ -61,7 +85,9 @@ html {
 body {
   /* Margin bottom by footer height */
   margin-bottom: 60px;
+  background-color: #dcdcdc;
 }
+
 .footer {
   position: absolute;
   bottom: 0;

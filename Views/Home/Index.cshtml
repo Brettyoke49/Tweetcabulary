@@ -2,9 +2,16 @@
     ViewData["Title"] = "Home Page";
 }
 
-<div class="text-center">
+<div class="card-title">
     <h1 class="display-4">Tweetcabulary</h1>
-    <h3>Find out how expressive you are</h3>
+    <h3>How expressive are you?</h3>
     <br />
     <p>Current server time is @DateTime.Now</p>
 </div>
+
+<form asp-action="GetTwitterVocab">
+    <div class="submitView">
+        <input name="UserHandle" class="form-control" maxlength="16" placeholder='&#64Example_User'/>
+        <input type="submit" class="btn btn-primary" value="Get Stats" />
+    </div>
+</form>
