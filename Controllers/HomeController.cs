@@ -28,6 +28,12 @@ namespace Tweetcabulary.Controllers
             return View();
         }
 
+        [HttpPost("UserHandle")]
+        public IActionResult UserAnalysis(string userHandle, [FromServices]ITwitAPI twitService)
+        {
+            return View(new UserAnalysis(userHandle, twitService));
+        }
+
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {

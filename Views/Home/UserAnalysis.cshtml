@@ -1,0 +1,14 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+
+
+<div class="card-title">
+    <h1 class="display-4">Results for @Model.GetHandle()</h1>
+</div>
+<div class="table-bordered">
+    @foreach (var item in @Model.getTweets())
+    {
+        <p>@item</p>
+    }
+</div>

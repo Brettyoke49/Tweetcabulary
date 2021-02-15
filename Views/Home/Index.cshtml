@@ -1,6 +1,7 @@
 ﻿@{
     ViewData["Title"] = "Home Page";
 }
+<!--<script src="~/js/site.js" type="text/javascript"></script>-->
 
 <div class="card-title">
     <h1 class="display-4">Tweetcabulary</h1>
@@ -9,9 +10,11 @@
     <p>Current server time is @DateTime.Now</p>
 </div>
 
-<form asp-action="GetTwitterVocab">
+<form asp-action="UserAnalysis">
     <div class="submitView">
-        <input name="UserHandle" class="form-control" maxlength="16" placeholder='&#64Example_User'/>
-        <input type="submit" class="btn btn-primary" value="Get Stats" />
+        <input required name="UserHandle" id="UserHandle" class="form-control" maxlength="16" placeholder="&#64Example_User"
+               pattern="&#64[a-zA-Z1-9_]{1,15}" oninvalid="setCustomValidity('Invalid Twitter Handle Format')"
+               oninput="setCustomValidity('')"/>
+        <input type="submit" class="btn btn-primary" value="Get Stats"/>
     </div>
 </form>
