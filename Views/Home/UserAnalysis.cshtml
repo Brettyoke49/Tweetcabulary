@@ -5,9 +5,11 @@
 
 <div class="card-title">
     <h1 class="display-4">Results for @Model.GetHandle()</h1>
+    <p>Analyzed @Model.GetTweetCount() tweets</p>
 </div>
+
 <div class="table-bordered">
-    @foreach (var item in @Model.getTweets())
+    @foreach (var item in @Model.GetTweets())
     {
         <p>@item</p>
     }

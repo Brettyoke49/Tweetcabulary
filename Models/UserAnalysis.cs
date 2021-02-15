@@ -8,21 +8,25 @@ namespace Tweetcabulary.Models
     public class UserAnalysis
     {
         //Private members
-        private string userHandle;
         private TwitterUser twitterUser;
-        private List<string> tweets;
 
         private ITwitAPI twitService;
 
         //Constructor
         public UserAnalysis(string userHandle, ITwitAPI twitService)
         {
-            this.userHandle = userHandle.Substring(1);
-            this.twitService = twitService;
+            //Forcing user to enter @ to make clear what name is needed, but we don't actually want it
+            if (userHandle[0] == '@') userHandle.Substring(1);
 
-            var waitTweets = this.twitService.GetTweets(this.userHandle);
+            this.twitService = twitService;
+            var waitTweets = this.twitService.GetUserTweets(userHandle);
             waitTweets.Wait();
-            tweets = waitTweets.Result;
+            twitterUser = waitTweets.Result;
+
+            if(!twitterUser.IsValidUser())
+            {
+
+            }
         }
 
         //Private Methods
@@ -30,12 +34,17 @@ namespace Tweetcabulary.Models
         //Public Methods
         public string GetHandle()
         {
-            return userHandle;
+            return twitterUser.userHandle;
         }
 
-        public List<string> getTweets()
+        public List<string> GetTweets()
         {
-            return tweets;
+            return twitterUser.GetAllTweetText();
+        }
+
+        public int GetTweetCount()
+        {
+            return twitterUser.GetTweetCount();
         }
 
     }
