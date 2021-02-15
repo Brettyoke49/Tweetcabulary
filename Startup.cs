@@ -25,12 +25,12 @@ namespace Tweetcabulary
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllersWithViews();
-            System.Diagnostics.Debug.WriteLine("Starting twitter api service...");
             services.AddSingleton<ITwitAPI, TwitAPI>();
+            services.AddSingleton<ISpellCheck, SpellCheck>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ITwitAPI twitService)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ITwitAPI twitService, ISpellCheck spellService)
         {
             if (env.IsDevelopment())
             {
@@ -57,6 +57,7 @@ namespace Tweetcabulary
             });
 
             twitService.Authenticate();
+            spellService.loadWords(env.ContentRootPath + "\\English.dic");
         }
     }
 }

@@ -11,7 +11,7 @@ namespace Tweetcabulary.Models
         public string text { get; }
         public List<string> words { get; }
         public List<string> hashtags { get; }
-        public string longestWord { get; set; }
+        public string longestWord { get; private set; }
         private string userHandle { get; }
 
         //Constructors
@@ -50,12 +50,77 @@ namespace Tweetcabulary.Models
             }
         }
 
+        /// <summary>
+        /// Count the syllables in a given word from a tweet
+        /// </summary>
+        /// <param name="word">Single dictionary word</param>
+        /// <returns>Approximate syllable count</returns>
+        private int CountSyllables(string word)
+        {
+            char[] vowels = { 'a', 'e', 'i', 'o', 'u', 'y' };
+            string currentWord = word;
+            int numVowels = 0;
+            bool lastWasVowel = false;
+            foreach (char wc in currentWord)
+            {
+                bool foundVowel = false;
+                foreach (char v in vowels)
+                {
+                    //don't count diphthongs
+                    if (v == wc && lastWasVowel)
+                    {
+                        foundVowel = true;
+                        lastWasVowel = true;
+                        break;
+                    }
+                    else if (v == wc && !lastWasVowel)
+                    {
+                        numVowels++;
+                        foundVowel = true;
+                        lastWasVowel = true;
+                        break;
+                    }
+                }
+
+                //if full cycle and no vowel found, set lastWasVowel to false;
+                if (!foundVowel)
+                    lastWasVowel = false;
+            }
+            //remove es, it's _usually? silent
+            if (currentWord.Length > 2 &&
+                currentWord.Substring(currentWord.Length - 2) == "es")
+                numVowels--;
+            // remove silent e
+            else if (currentWord.Length > 1 &&
+                currentWord.Substring(currentWord.Length - 1) == "e")
+                numVowels--;
+
+            return numVowels;
+        }
+
 
         //Public Methods
-        public int GetSyllableCount() //TODO
+        public int GetSyllableCount()
         {
+            int SyllableSum = 0;
 
-            return 0;
+            foreach (string word in words)
+            {
+                SyllableSum += CountSyllables(word);
+            }
+
+            return SyllableSum;
+        }
+
+        public int GetCharacterCount()
+        {
+            int characterCount = 0;
+            foreach (string word in words)
+            {
+                characterCount += word.Length;
+            }
+
+            return characterCount;
         }
     }
 }

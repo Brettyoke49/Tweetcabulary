@@ -50,6 +50,19 @@ p {
     align-items: center;
 }
 
+table.table-bordered {
+    border: 1px ridge AliceBlue;
+    margin-top: 20px;
+    margin-bottom: 75px;
+}
+
+table.table-bordered > thead > tr > th {
+    border: 1px ridge AliceBlue;
+}
+table.table-bordered > tbody > tr > td {
+    border: 1px ridge AliceBlue;
+}
+
 /* Sticky footer styles
 -------------------------------------------------- */
 html {

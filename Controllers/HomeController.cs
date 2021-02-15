@@ -29,9 +29,9 @@ namespace Tweetcabulary.Controllers
         }
 
         [HttpPost("UserHandle")]
-        public IActionResult UserAnalysis(string userHandle, [FromServices]ITwitAPI twitService)
+        public IActionResult UserAnalysis(string userHandle, [FromServices]ITwitAPI twitService, [FromServices]ISpellCheck spellService)
         {
-            return View(new UserAnalysis(userHandle, twitService));
+            return View(new UserAnalysis(userHandle, twitService, spellService));
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

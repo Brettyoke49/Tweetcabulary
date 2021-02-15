@@ -2,15 +2,58 @@
     ViewData["Title"] = "Home Page";
 }
 
-
 <div class="card-title">
     <h1 class="display-4">Results for @Model.GetHandle()</h1>
     <p>Analyzed @Model.GetTweetCount() tweets</p>
 </div>
 
-<div class="table-bordered">
-    @foreach (var item in @Model.GetTweets())
-    {
-        <p>@item</p>
-    }
-</div>
+<body>
+    <table class="table table-striped table-bordered table-hover">
+        <tr>
+            <td>Average Word Length</td>
+            <td>@Model.AverageWordLength() characters</td>
+        </tr>
+        <tr>
+            <td>Average Tweet Length</td>
+            <td>@Model.AverageTweetLength() words</td>
+        </tr>
+        <tr>
+            <td>Percent Misspelled Words</td>
+            <td>@Model.PercentMisspelledWords() %</td>
+        </tr>
+        <tr>
+            <td>Average Syllables Per Word (Apx)</td>
+            <td>@Model.AverageSyllables() syllables</td>
+        </tr>
+        <tr>
+            <td>Average # of Hashtags Per Tweet</td>
+            <td>@Model.AverageHashtags() hashtags</td>
+        </tr>
+        <tr>
+            <td>Longest Word Used</td>
+            <td>@Model.LongestWord()</td>
+        </tr>
+    </table>
+
+    <h4>Top 10 longest words used</h4>
+    <ol>
+        @foreach (var item in @Model.TopTenWords())
+        {
+            <li>@item</li>
+        }
+    </ol>
+
+    <br /><br /><br /><br /><br />
+    <div class="text-center">
+        <form action="javascript:showhide('tweetsList')">
+            <input type="submit" class="btn btn-primary" value="Click to show/hide analyzed tweets" />
+        </form>
+    </div>
+    <br />
+    <div id="tweetsList" style="display:none;">
+        @foreach (var item in @Model.GetTweets())
+        {
+            <p>@item</p>
+        }
+    </div>
+</body>
