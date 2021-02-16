@@ -29,6 +29,11 @@ namespace Tweetcabulary.Models
         public void loadWords(string path) 
         {
             spellChecker.LoadCustomDictionary(path);
+            var liveDictionaries = spellChecker.ListLiveDictionaries();
+            if(liveDictionaries.Count != 1)
+            {
+                throw new Exception("Failed to load dictionary from path: " + path);
+            }
         }
 
         public bool IsValidWord(string word)
