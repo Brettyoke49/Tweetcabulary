@@ -67,7 +67,7 @@ namespace Tweetcabulary
             string bearer = root.GetProperty("Bearer").ToString();
 
             twitService.Authenticate(APIKey, APISecret, bearer);
-            spellService.loadWords(env.ContentRootPath + "\\English.dic");
+            spellService.loadWords(Path.Combine(env.ContentRootPath, "English.dic"));
         }
     }
 }
