@@ -33,6 +33,7 @@ namespace Tweetcabulary.Models
 
         public bool IsValidWord(string word)
         {
+            if (String.IsNullOrEmpty(word)) return false;
             return spellChecker.SimpleSpell(word, true);
         }
     }

@@ -34,11 +34,17 @@ namespace Tweetcabulary.Models
             if (tweetList.Count == 0)
             {
                 this.valid = false;
+                this.tweets = new List<Tweet>();
             }
             else
             {
                 this.tweets = tweetList;
                 CalculateMetrics();
+            }
+
+            if(this.totalWords == 0)
+            {
+                this.valid = false;
             }
         }
 
@@ -61,9 +67,9 @@ namespace Tweetcabulary.Models
         }
 
         //Public Methods
-        public List<String> GetAllTweetText()
+        public List<string> GetAllTweetText()
         {
-            List<String> allTweetText = new List<string>();
+            List<string> allTweetText = new List<string>();
             foreach(var tweet in tweets)
             {
                 allTweetText.Add(tweet.text);

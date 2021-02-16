@@ -12,27 +12,24 @@ namespace Tweetcabulary.Models
 {
     public interface ITwitAPI
     {
-        void Authenticate();
+        void Authenticate(string key1, string key2, string key3);
         Task<TwitterUser> GetUserTweets(string userHandle);
     }
 
     public class TwitAPI : ITwitAPI
     {
-        //API Keys
-        private static string APIKey = "XRFfi6gtf61i30l5AIQ9ikgBv";
-        private static string APISecret = "fo0OZsJ94CKIMFqVKTro0hDKGoe74B5UE0F28NujWnr6wnYUJx";
-        private static string Bearer = "AAAAAAAAAAAAAAAAAAAAAGrPMgEAAAAAn3jlv0JGjrWmPfaprpwbrkm6MFw%3DvqrB12jhSiEFhfJeFnzUARVuRJhURXHIWlSM7PKQ2G6kV6shB0";
-
         //Member variables
         private Tweetinvi.TwitterClient appClient;
 
+
         //Constructor
         public TwitAPI() {
-            appClient = new TwitterClient(APIKey, APISecret, Bearer);
         }
 
         //Call at startup to force initialization and authentication of this singleton
-        public void Authenticate(){ }
+        public void Authenticate(string APIKey, string APISecret, string Bearer){
+            appClient = new TwitterClient(APIKey, APISecret, Bearer);
+        }
 
         //Private Methods
         private string ParseTweet(string tweet)
@@ -42,6 +39,9 @@ namespace Tweetcabulary.Models
 
             //Remove non-alpha or space characters
             tweet = Regex.Replace(tweet, @"[^a-zA-Z ]", "");
+
+            //Remove links
+            tweet = Regex.Replace(tweet, @"http\w+", "");
 
             return tweet;
         }
@@ -76,10 +76,10 @@ namespace Tweetcabulary.Models
             } 
             catch (Exception ex)
             {
-                //Error 34 indicates invalid user
-                if(ex.Message.Contains("34"))
+                //Error 34 indicates invalid user, 401 indicates private user (authorization required)
+                if(ex.Message.Contains("34") || ex.Message.Contains("401"))
                 {
-                    //Return empty list if invalid user.
+                    //Return invalid user
                     return new TwitterUser(false, userHandle);
                 }
                 else

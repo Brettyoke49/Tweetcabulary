@@ -9,6 +9,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Tweetcabulary.Models;
+using System.Text.Json;
+using System.IO;
 
 namespace Tweetcabulary
 {
@@ -55,8 +57,16 @@ namespace Tweetcabulary
                     name: "default",
                     pattern: "{controller=Home}/{action=Index}/{id?}");
             });
+            //Get auth keys
+            string keyFile = File.ReadAllText(env.ContentRootPath + "\\APIKeys.json");
+            JsonDocument keys = JsonDocument.Parse(keyFile);
+            JsonElement root = keys.RootElement;
 
-            twitService.Authenticate();
+            string APIKey = root.GetProperty("APIKey").ToString();
+            string APISecret = root.GetProperty("APISecret").ToString();
+            string bearer = root.GetProperty("Bearer").ToString();
+
+            twitService.Authenticate(APIKey, APISecret, bearer);
             spellService.loadWords(env.ContentRootPath + "\\English.dic");
         }
     }

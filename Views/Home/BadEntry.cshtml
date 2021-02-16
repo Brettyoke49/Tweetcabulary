@@ -1,0 +1,12 @@
+﻿@{
+    ViewData["Title"] = "BadEntry";
+}
+<h1>Invalid User</h1>
+
+<p>The user you entered either doesn't exist, has their account set to private, or does not have any tweets that are available for analysis.</p>
+
+<div class="text-center">
+    <form asp-action="Index">
+        <input type="submit" class="btn btn-primary" value="Try Again" />
+    </form>
+</div>

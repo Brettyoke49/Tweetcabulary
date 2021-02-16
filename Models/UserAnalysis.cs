@@ -26,11 +26,6 @@ namespace Tweetcabulary.Models
             waitTweets.Wait();
 
             this.twitterUser = waitTweets.Result;
-
-            if(!twitterUser.IsValidUser())
-            {
-
-            }
         }
 
         //Private Methods
@@ -46,6 +41,11 @@ namespace Tweetcabulary.Models
         }
 
         //Public Methods
+        public bool IsValid()
+        {
+            return twitterUser.IsValidUser();
+        }
+
         public string GetHandle()
         {
             return twitterUser.userHandle;
@@ -99,12 +99,29 @@ namespace Tweetcabulary.Models
         }
 
         /// <summary>
-        /// Top 10 words used excluding basic articles and pronouns
+        /// Top 10 words used by count excluding basic articles and pronouns
         /// </summary>
         /// <returns>List of top 10 words</returns>
         public List<string> TopTenWords()
         {
-            return new List<string> { "dog", "cat", "brother", "Angelica" };
+            List<string> topTen = new List<string>();
+
+            Dictionary<string, int> occurences = new Dictionary<string, int>();
+            List<string> words = twitterUser.allWords;
+            //Build dictionary
+            foreach (string word in words)
+            {
+                string lowerWord = word.ToLower();
+                occurences.TryGetValue(lowerWord, out int currentCount);
+                occurences[lowerWord] = currentCount + 1;
+            }
+            //Grab top ten items
+            foreach (KeyValuePair<string, int> item in occurences.OrderByDescending(key => key.Value))
+            {
+                if (topTen.Count() == 10) break;
+                topTen.Add(item.Key);
+            }
+            return topTen;
         }
 
     }

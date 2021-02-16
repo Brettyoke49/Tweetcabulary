@@ -28,10 +28,23 @@ namespace Tweetcabulary.Controllers
             return View();
         }
 
+        public IActionResult BadEntry()
+        {
+            return View();
+        }
+
         [HttpPost("UserHandle")]
         public IActionResult UserAnalysis(string userHandle, [FromServices]ITwitAPI twitService, [FromServices]ISpellCheck spellService)
         {
-            return View(new UserAnalysis(userHandle, twitService, spellService));
+            UserAnalysis u = new UserAnalysis(userHandle, twitService, spellService);
+            if(u.IsValid())
+            {
+                return View(u);
+            } 
+            else
+            {
+                return View("BadEntry");
+            }
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
