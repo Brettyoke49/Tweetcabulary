@@ -89,10 +89,11 @@ namespace Tweetcabulary.Models
                 }
             }
 
-            while (!userTimelineIterator.Completed)
+            while (!userTimelineIterator.Completed && tweets.Count <= 1500)
             {
                 var page = await userTimelineIterator.NextPageAsync();
                 foreach(var tweet in page) {
+                    if (tweets.Count >= 1500) break;
                     if (String.Equals(tweet.CreatedBy.ScreenName.ToLower(), userHandle) && !tweet.IsRetweet)
                     {
                         string tweetText = ParseTweet(tweet.Text);

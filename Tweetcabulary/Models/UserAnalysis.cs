@@ -48,7 +48,7 @@ namespace Tweetcabulary.Models
 
         public string GetHandle()
         {
-            return twitterUser.userHandle;
+            return '@' + twitterUser.userHandle;
         }
 
         public List<string> GetTweets()
