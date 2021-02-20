@@ -17,8 +17,8 @@ namespace Tweetcabulary.Models
         public UserAnalysis(string userHandle, ITwitAPI twitService, ISpellCheck spellService)
         {
             //Forcing user to enter @ to make clear what name is needed, but we don't actually want it
-            if (userHandle[0] == '@') userHandle.Substring(1);
-
+            if (userHandle[0] == '@') userHandle = userHandle.Substring(1);
+            userHandle = userHandle.ToLower();
             this.spellService = spellService;
 
             this.twitService = twitService;
@@ -64,18 +64,24 @@ namespace Tweetcabulary.Models
         //Analytics methods
         public decimal AverageWordLength()
         {
+            if (twitterUser.totalWords == 0) return 0;
+
             decimal avgLength = (decimal)twitterUser.totalCharacters / (decimal)twitterUser.totalWords;
             return Math.Round(avgLength, 2, MidpointRounding.AwayFromZero);
         }
 
         public decimal AverageTweetLength()
         {
+            if (twitterUser.GetTweetCount() == 0) return 0;
+
             decimal avgTweetLength = (decimal)twitterUser.totalWords / (decimal)twitterUser.GetTweetCount();
             return Math.Round(avgTweetLength, 2, MidpointRounding.AwayFromZero);
         }
 
         public decimal PercentMisspelledWords()
         {
+            if (twitterUser.totalWords == 0) return 0;
+
             int misspelledWords = CountMisspelledWords(twitterUser.allWords);
             decimal percentMisspelled = Math.Round(((decimal)misspelledWords / (decimal)twitterUser.totalWords) * 100, 2, MidpointRounding.AwayFromZero);
             return percentMisspelled;
@@ -83,12 +89,16 @@ namespace Tweetcabulary.Models
 
         public decimal AverageSyllables()
         {
+            if (twitterUser.totalWords == 0) return 0;
+
             decimal avgSyllables = (decimal)twitterUser.totalSyllables / (decimal)twitterUser.totalWords;
             return Math.Round(avgSyllables, 2, MidpointRounding.AwayFromZero);
         }
 
         public decimal AverageHashtags()
         {
+            if (twitterUser.GetTweetCount() == 0) return 0;
+
             decimal avgHashtags = (decimal)twitterUser.totalHashtags / (decimal)twitterUser.GetTweetCount();
             return Math.Round(avgHashtags, 2, MidpointRounding.AwayFromZero);
         }

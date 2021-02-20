@@ -7,6 +7,7 @@ using Tweetinvi;
 using Tweetinvi.Models;
 using Tweetinvi.Parameters;
 using Tweetinvi.Models.Entities;
+using Tweetinvi.Iterators;
 
 namespace Tweetcabulary.Models
 {
@@ -34,14 +35,15 @@ namespace Tweetcabulary.Models
         //Private Methods
         private string ParseTweet(string tweet)
         {
-            //Remove hashtags, user tags, emoticons, and other invalid words from tweets
-            tweet = Regex.Replace(tweet, @"[\@\#\:\;\(\)]\w+", "");
-
-            //Remove non-alpha or space characters
-            tweet = Regex.Replace(tweet, @"[^a-zA-Z ]", "");
+            tweet = Regex.Replace(tweet, "’s", "");
+            //Remove hashtags, user tags, 's contractions/possessions
+            tweet = Regex.Replace(tweet, @"[\@\#]\S*|['’]s\S*", "");
 
             //Remove links
-            tweet = Regex.Replace(tweet, @"http\w+", "");
+            tweet = Regex.Replace(tweet, @"http\S*|www\.\S*", "");
+
+            //Remove non-alpha, apostrophe, or space characters
+            tweet = Regex.Replace(tweet, @"[^a-zA-Z '’]", " ");
 
             return tweet;
         }
@@ -67,17 +69,16 @@ namespace Tweetcabulary.Models
         /// <returns>TwitterUser object containing up to 3200 most recent tweets</returns>
         public async Task<TwitterUser> GetUserTweets(string userHandle)
         {
-            ITweet[] userTweets = new ITweet[] { };
             List<Tweet> tweets = new List<Tweet>();
-
+            ITwitterIterator<ITweet, long?> userTimelineIterator;
             try
             {
-                userTweets = await appClient.Timelines.GetUserTimelineAsync(userHandle);
-            } 
+                userTimelineIterator = appClient.Timelines.GetUserTimelineIterator(userHandle);
+            }
             catch (Exception ex)
             {
                 //Error 34 indicates invalid user, 401 indicates private user (authorization required)
-                if(ex.Message.Contains("34") || ex.Message.Contains("401"))
+                if (ex.Message.Contains("34") || ex.Message.Contains("401"))
                 {
                     //Return invalid user
                     return new TwitterUser(false, userHandle);
@@ -88,14 +89,18 @@ namespace Tweetcabulary.Models
                 }
             }
 
-            //Create Tweet objects to pass to user
-            foreach (var tweet in userTweets)
+            while (!userTimelineIterator.Completed)
             {
-                //Remove hashtags and user tags from tweet text
-                string tweetText = ParseTweet(tweet.Text);
-                List<string> hashtags = ParseHashtags(tweet.Hashtags);
+                var page = await userTimelineIterator.NextPageAsync();
+                foreach(var tweet in page) {
+                    if (String.Equals(tweet.CreatedBy.ScreenName.ToLower(), userHandle) && !tweet.IsRetweet)
+                    {
+                        string tweetText = ParseTweet(tweet.Text);
+                        List<string> hashtags = ParseHashtags(tweet.Hashtags);
 
-                tweets.Add(new Tweet(tweetText, hashtags, userHandle));
+                        tweets.Add(new Tweet(tweetText, hashtags, userHandle));
+                    }
+                }
             }
 
             return new TwitterUser(tweets, userHandle);
