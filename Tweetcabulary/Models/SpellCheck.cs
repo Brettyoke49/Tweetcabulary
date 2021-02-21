@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -14,32 +16,30 @@ namespace Tweetcabulary.Models
     public class SpellCheck : ISpellCheck
     {
         //Private members
-        private ASPNetSpell.SpellChecker spellChecker;
+        HashSet<string> dictionary;
 
         //Constructor
         public SpellCheck()
         {
-            //Spellchecker from Spell.Check library
-            spellChecker = new ASPNetSpell.SpellChecker();
+            dictionary = new HashSet<string>();
         }
 
         //Public Methods
 
-        //Call at startup to force initialization and authentication of this singleton
+        //Call at startup to load dictionary. Only needed one time per server instance.
         public void loadWords(string path) 
         {
-            spellChecker.LoadCustomDictionary(path);
-            var liveDictionaries = spellChecker.ListLiveDictionaries();
-            if(liveDictionaries.Count != 1)
+            var lines = File.ReadLines(path);
+            foreach(string line in lines)
             {
-                throw new Exception("Failed to load dictionary from path: " + path);
+                dictionary.Add(line);
             }
         }
 
         public bool IsValidWord(string word)
         {
             if (String.IsNullOrEmpty(word)) return false;
-            return spellChecker.SimpleSpell(word, true);
+            return dictionary.Contains(word.ToLower());
         }
     }
 }
