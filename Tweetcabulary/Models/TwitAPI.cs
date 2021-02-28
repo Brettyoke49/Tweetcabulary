@@ -66,33 +66,28 @@ namespace Tweetcabulary.Models
         /// Get all tweets for a given user
         /// </summary>
         /// <param name="userHandle">Username for twitter account</param>
-        /// <returns>TwitterUser object containing up to 3200 most recent tweets</returns>
+        /// <returns>TwitterUser object containing up to 1500 most recent tweets</returns>
         public async Task<TwitterUser> GetUserTweets(string userHandle)
         {
-            List<Tweet> tweets = new List<Tweet>();
-            ITwitterIterator<ITweet, long?> userTimelineIterator;
+            IUser user;
             try
             {
-                userTimelineIterator = appClient.Timelines.GetUserTimelineIterator(userHandle);
+                user = await appClient.Users.GetUserAsync(userHandle);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                //Error 34 indicates invalid user, 401 indicates private user (authorization required)
-                if (ex.Message.Contains("34") || ex.Message.Contains("401"))
-                {
-                    //Return invalid user
-                    return new TwitterUser(false, userHandle);
-                }
-                else
-                {
-                    throw new Exception("Error obtaining user: " + userHandle + ", " + ex.Message);
-                }
+                return new TwitterUser(false, userHandle);
             }
+            
+            List<Tweet> tweets = new List<Tweet>();
+            ITwitterIterator<ITweet, long?> userTimelineIterator = appClient.Timelines.GetUserTimelineIterator(user.Id);
 
             while (!userTimelineIterator.Completed && tweets.Count <= 1500)
             {
                 var page = await userTimelineIterator.NextPageAsync();
-                foreach(var tweet in page) {
+
+                foreach (var tweet in page)
+                {
                     if (tweets.Count >= 1500) break;
                     if (String.Equals(tweet.CreatedBy.ScreenName.ToLower(), userHandle) && !tweet.IsRetweet)
                     {
@@ -102,6 +97,7 @@ namespace Tweetcabulary.Models
                         tweets.Add(new Tweet(tweetText, hashtags, userHandle));
                     }
                 }
+
             }
 
             return new TwitterUser(tweets, userHandle);
