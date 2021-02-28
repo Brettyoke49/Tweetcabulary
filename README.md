@@ -1,5 +1,7 @@
 # Tweetcabulary
 
+https://tweetcabulary.azurewebsites.net/
+
 This project is an ASP.NET Core web app that allows users to enter in a given twitter handle and receive metrics about their vocabulary and word usage.
 
 Notable dependencies include TweetinviAPI.
